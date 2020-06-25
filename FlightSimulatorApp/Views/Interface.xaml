@@ -1,0 +1,106 @@
+﻿<Window x:Class="FlightSimulatorApp.Interface"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
+      xmlns:wpfCustomControls="clr-namespace:WpfCustomControls" 
+      xmlns:viewmodel="clr-namespace:FlightSimulatorApp.ViewModels"
+      Title="Flight Simulator - Ezequiel Glocer" 
+      WindowState="Maximized" ResizeMode="NoResize" SizeToContent="Manual">
+
+    <!--Main Grid-->
+    <Grid ShowGridLines="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2.5*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20*"/>
+        </Grid.RowDefinitions>
+
+        <Border Background="Black" />
+        <Border Grid.Row="0" Background="LightGoldenrodYellow" />
+        <Border Grid.Row="1" Background="LightGreen" />
+
+        <Grid HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Center"/>
+        <TextBlock x:Name="scrolling_text" Grid.Row="0" FontSize="11" Text="{Binding SocketAnswer}"/>
+
+        <!-- Settings & EXIT buttons Grid -->
+        <Grid Grid.Row="0" Grid.Column="1" ShowGridLines="True" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="settings_button" Grid.Row="0" Grid.Column="0" Click="Settings_Click" FontWeight="Bold" Margin="47,0,0,0" Background="#FFA28F8F" Foreground="#FFDED8D8">Settings</Button>
+            <Button x:Name="exit_button" Grid.Row="0" Grid.Column="1" Click="EXIT_Click" FontSize="18" FontWeight="Bold" HorizontalAlignment="Left" Width="149" Margin="0,0,-6,0" Background="#FFFF3A3A" >EXIT</Button>
+        </Grid>
+        <!-- Settings & EXIT buttons Grid -->
+
+        <m:Map x:Name="myMap" Grid.Row="1" Grid.Column="0" ZoomLevel="10" Mode="Aerial" Cursor="Hand">
+            <!--<m:Map.Center>
+                <m:Location Latitude="32.003657" Longitude="34.872770">
+                </m:Location>
+            </m:Map.Center>-->
+            <m:Map.Children>
+                <m:MapPolygon StrokeThickness = "4" Locations= "{Binding PolygonLocations,Mode=OneWay}">
+                    <m:MapPolygon.Stroke>
+                        <ImageBrush/>
+                    </m:MapPolygon.Stroke>
+                    <m:MapPolygon.Fill>
+                        <ImageBrush ImageSource="/FlightSimulatorApp;component/Images/clipart-plane-rojo.png"/>
+                    </m:MapPolygon.Fill>
+
+                </m:MapPolygon>
+            </m:Map.Children>
+        </m:Map>
+
+        <!-- Grid: INDICATORS & CONTROLS, 4 rows-->
+        <Grid Grid.Row="1" Grid.Column="1" ShowGridLines="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <!-- INDICATORS label -->
+                <RowDefinition Height="6*" />
+                <!-- INDICATORS data, is a Grid -->
+                <RowDefinition Height="1*" />
+                <!-- CONTROLS label -->
+                <RowDefinition Height="auto" />
+                <!-- Grid CONTROLS -->
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="*">
+
+                </ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Center" Width="300" Background="Black" Foreground="White" Content="INDICATORS" />
+            <TextBlock Name="indicators_txtblock" Grid.Row="1" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding IndicatorsText}"/>
+
+            <Label Grid.Row="2" FontWeight="Bold" HorizontalAlignment="Center" Width="300" Background="Black" Foreground="White" Content="CONTROLS"/>
+
+            <wpfCustomControls:OnScreenJoystick Grid.Row="3" Width="200" HorizontalAlignment="Center"/>
+            <Label x:Name="label_rudder" Grid.Row="4" FontWeight="Bold" HorizontalAlignment="Center" Width="400" Background="Blue" Padding="10" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Rudder(direction - axe X): 0"/>
+            <Label x:Name="label_elevator" Grid.Row="5" FontWeight="Bold" HorizontalAlignment="Center" Width="400" Background="DarkViolet" Padding="7" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Elevator(direction - axe Y): 0"/>
+
+            <Label x:Name="label_slider_throttle" Grid.Row="6" FontWeight="Bold" HorizontalAlignment="Center" Width="400" Background="Green" Content="Binding ThrottleValue" Padding="7"/>
+            <Slider Grid.Row="7" x:Name="throttle_slider" HorizontalAlignment="Center" Width="400" Padding="7" Background="LightGreen" Minimum="0" Maximum="1" Value="{Binding ThrottleValue}" ValueChanged="throttle_slider_ValueChanged"/>
+
+            <Label x:Name="label_slider_aileron" Grid.Row="8" FontWeight="Bold" HorizontalAlignment="Center" Width="400" Padding="7" Background="Yellow" Content="Aileron: "/>
+            <Slider Grid.Row="9" x:Name="aileron_slider" HorizontalAlignment="Center" Width="400" Padding="7" Background="LightYellow" Minimum="-1" Maximum="1" Value="{Binding AileronValue}" ValueChanged="aileron_slider_ValueChanged"/>
+            <CheckBox x:Name="chkmpDisconnected" Content="CheckBox" HorizontalAlignment="Left" Margin="9,0,0,0" Grid.Row="10" VerticalAlignment="Top" Height="19" Width="209" IsChecked="{Binding Disconnected}" Checked="chkDisconnected_Checked" Visibility="Collapsed"/>
+        </Grid>
+        <!-- END Grid: INDICATORS & CONTROLS, 4 rows-->
+    </Grid>
+    <!-- END Main Grid -->
+</Window>
